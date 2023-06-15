@@ -44,10 +44,15 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
     //Add moshi for deserealization of json to data class
     implementation 'com.squareup.moshi:moshi-kotlin:1.12.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+
+    //add picasso for image display
+    implementation 'com.squareup.picasso:picasso:2.8'
 
 }

@@ -2,15 +2,19 @@ package com.example.rickandmorty
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 
 
 class MainActivity : AppCompatActivity() {
@@ -18,22 +22,52 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val nameTextView = findViewById<AppCompatTextView>(R.id.nameTextView)
+        val headerImageView = findViewById<AppCompatImageView>(R.id.headerImageView)
+        val aliveTextView = findViewById<AppCompatTextView>(R.id.aliveTextView)
+        val originTextView = findViewById<AppCompatTextView>(R.id.originTextView)
+        val speciesTextView = findViewById<AppCompatTextView>(R.id.speciesTextView)
+        val genderImageView = findViewById<AppCompatImageView>(R.id.genderImageView)
+
         val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://rickandmortyapi.com/api/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
 
-        val rickAndMortyService : RickAndMortyService = retrofit.create(RickAndMortyService::class.java)
-        rickAndMortyService.getCharacterById().enqueue(object : Callback<Any> {
-            override fun onResponse(call: Call<Any>, response: Response<Any>) {
-                Log.i("MainActivity",response.toString())
-            }
+        val rickAndMortyService: RickAndMortyService =
+            retrofit.create(RickAndMortyService::class.java)
+        rickAndMortyService.getCharacterById(2)
+            .enqueue(object : Callback<GetCharacterByIdResponse> {
+                override fun onResponse(
+                    call: Call<GetCharacterByIdResponse>,
+                    response: Response<GetCharacterByIdResponse>
+                ) {
+                    Log.i("MainActivity", response.toString())
+                    if (!response.isSuccessful) {
+                        Toast.makeText(this@MainActivity, "Unsuccsesfull !", Toast.LENGTH_SHORT)
+                            .show()
+                        return
+                    }
+                    val body = response.body()!!
+                    nameTextView.text = body.name
+                    aliveTextView.text = body.status
+                    speciesTextView.text = body.species
+                    originTextView.text = body.origin.name
 
-            override fun onFailure(call: Call<Any>, t: Throwable) {
-                Log.i("MainActivity",t.message?: "Null message")
-            }
+                    if (body.gender.equals("male", ignoreCase = true)) {
+                        genderImageView.setImageResource(R.drawable.ic_male_24)
+                    } else {
+                        genderImageView.setImageResource(R.drawable.ic_female_24)
+                    }
 
-        })   //using enqueue because calling from main thread ui
+                    Picasso.get().load(body.image).into(headerImageView)
+                }
+
+                override fun onFailure(call: Call<GetCharacterByIdResponse>, t: Throwable) {
+                    Log.i("MainActivity", t.message ?: "Null message")
+                }
+
+            })   //using enqueue because calling from main thread ui
     }
 }
