@@ -1,7 +1,14 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
+
+//For epoxy
+kapt {
+    correctErrorTypes = true
+}
+
 
 android {
     namespace 'com.example.rickandmorty'
@@ -41,6 +48,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -57,5 +65,27 @@ dependencies {
 
     //add viewmodel + coroutines
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
+    //add epoxy fore better image view
+    def epoxyVersion = "4.4.1"
+    implementation "com.airbnb.android:epoxy:$epoxyVersion"
+    kapt("com.airbnb.android:epoxy-processor:$epoxyVersion")
+
+    // Paging
+    def paging_version = "3.0.0"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    // Facebook Shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:28.2.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
+    // Jetpack Navigation
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+
 
 }
